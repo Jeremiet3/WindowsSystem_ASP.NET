@@ -5,6 +5,6 @@ namespace WindowsSystem_ASP.NET.Queries
 {
     public class GetMovieByIdQuery : IRequest<Movie>
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
     }
 }

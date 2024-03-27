@@ -31,6 +31,7 @@ namespace WindowsSystem_ASP.NET.Controllers
             return Ok(movies);
         }
 
+        // GET: Popular Movies
         [HttpGet("Popular")]
         public async Task<ActionResult<IEnumerable<Movie>>> GetPopularMovies()
         {
@@ -43,26 +44,6 @@ namespace WindowsSystem_ASP.NET.Controllers
         public async Task<ActionResult<Movie>> GetMovie(int id)
         {
 
-            //var movie = await _dbContext.Movies.FindAsync(id);
-
-            //if (movie == null)
-            //{
-            //    // Fetch from TMDb as a fallback
-            //    var blMovie = await _tmdbApiService.GetMovieByIdAsync(id);
-            //    if (blMovie == null)
-            //    {
-            //        return NotFound();
-            //    }
-
-            //    // Optional: Convert BL model back to entity model and save to database
-            //    movie = BlConversion.GetMovie(blMovie);
-            //    //_dbContext.Movies.Add(movie);
-            //    //await _dbContext.SaveChangesAsync();
-
-            //    return Ok(movie);
-            //}
-
-            //return Ok(movie);
             var movie = await _mediator.Send(new GetMovieByIdQuery { Id = id });
             if (movie == null)
             {
@@ -78,18 +59,7 @@ namespace WindowsSystem_ASP.NET.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Movie>>> GetMoviesBySearch(string s)
         {
-            //var blMovie = await _tmdbApiService.SearchMoviesAsync(s);
-            //if (blMovie == null)
-            //{
-            //    return NotFound();
-            //}
-            //List<Movie> movies = new List<Movie>();
-            //foreach (var movie in blMovie)
-            //{
-            //    movies.Add(BlConversion.GetMovie(movie));
-            //}
-            //return Ok(movies);
-
+           
             if (string.IsNullOrWhiteSpace(s))
             {
                 return BadRequest("Search term is required.");
@@ -100,13 +70,10 @@ namespace WindowsSystem_ASP.NET.Controllers
         }
 
         // POST: api/Movies
-        [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        [HttpPost("Id")]
+        public async Task<ActionResult<Movie>> PostMovie(int id)
         {
-            //_dbContext.Movies.Add(movie);
-            //await _dbContext.SaveChangesAsync();
-            //return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
-            var movieId = await _mediator.Send(new CreateMovieCommand( movie.Title,movie.Genres,movie.ReleaseDate,movie.RunTime,movie.Overview,movie.PosterURL,movie.TrailerURL,movie.TmdbId));
+            var movieId = await _mediator.Send(new CreateMovieCommand(id));
             return Ok(movieId);
 
         }
@@ -115,23 +82,6 @@ namespace WindowsSystem_ASP.NET.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMovie(int id, Movie movie)
         {
-            //if (id != movie.Id)
-            //{
-            //    return BadRequest();
-            //}
-            //_dbContext.Entry(movie).State = EntityState.Modified;
-            //try
-            //{
-            //    await _dbContext.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!MovieExists(id))
-            //        return NotFound();
-            //    else
-            //        throw;
-            //}
-            //return NoContent();
             if (id != movie.Id)
             {
                 return BadRequest();

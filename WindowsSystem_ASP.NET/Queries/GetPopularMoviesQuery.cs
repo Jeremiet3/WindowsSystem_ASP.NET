@@ -7,6 +7,5 @@ namespace WindowsSystem_ASP.NET.Queries
 {
     public class GetPopularMoviesQuery : IRequest<IEnumerable<Movie>>
     {
-       
     }
 }

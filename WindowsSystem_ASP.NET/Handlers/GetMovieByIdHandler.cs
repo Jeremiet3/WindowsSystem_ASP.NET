@@ -19,7 +19,7 @@ namespace WindowsSystem_ASP.NET.Handlers
         }
         public async Task<Movie> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
         {
-            var movie = await _dbContext.Movies.FindAsync(request.Id);
+            var movie = _dbContext.Movies.FirstOrDefault(x=>x.TmdbId==request.Id);
             if (movie == null)
             {
                 var blMovie = await _tmdbApiService.GetMovieByIdAsync(request.Id);
