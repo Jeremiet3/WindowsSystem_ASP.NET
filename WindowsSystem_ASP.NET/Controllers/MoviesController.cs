@@ -56,7 +56,7 @@ namespace WindowsSystem_ASP.NET.Controllers
         }
 
         // GET: by search
-        [HttpGet("search")]
+        [HttpGet("searchAll/query")]
         public async Task<ActionResult<IEnumerable<Movie>>> GetMoviesBySearch(string s)
         {
            
@@ -68,10 +68,23 @@ namespace WindowsSystem_ASP.NET.Controllers
             var movies = await _mediator.Send(new GetMoviesBySearchTermQuery(s));
             return Ok(movies);
         }
+        // GET: by search
+        [HttpGet("searchDB/query")]
+        public async Task<ActionResult<IEnumerable<Movie>>> GetMoviesBySearchFromDB(string s)
+        {
+
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return BadRequest("Search term is required.");
+            }
+
+            var movies = await _mediator.Send(new GetMovieInDatabaseBySearchQuery(s));
+            return Ok(movies);
+        }
 
         // POST: api/Movies
-        [HttpPost("Id")]
-        public async Task<ActionResult<Movie>> PostMovie(int id)
+        [HttpPost("Add/Id")]
+        public async Task<ActionResult<Movie>> PostMovie([FromQuery] int id)
         {
             var movieId = await _mediator.Send(new CreateMovieCommand(id));
             return Ok(movieId);
@@ -79,7 +92,7 @@ namespace WindowsSystem_ASP.NET.Controllers
         }
 
         // PUT: api/Movies/5
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<IActionResult> PutMovie(int id, Movie movie)
         {
             if (id != movie.Id)
@@ -97,9 +110,11 @@ namespace WindowsSystem_ASP.NET.Controllers
             return NoContent();
         }
 
+
+
         // DELETE: api/Movies/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMovie(int id)
+        [HttpDelete("Delete/Id")]
+        public async Task<IActionResult> DeleteMovie([FromQuery] int id)
         {
             var success = await _mediator.Send(new DeleteMovieCommand(id));
 
@@ -108,7 +123,7 @@ namespace WindowsSystem_ASP.NET.Controllers
                 return NotFound(); 
             }
 
-            return NoContent(); 
+            return Ok(); 
         }
     }
 }

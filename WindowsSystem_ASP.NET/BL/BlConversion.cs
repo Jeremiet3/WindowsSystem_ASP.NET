@@ -18,10 +18,15 @@ namespace WindowsSystem_ASP.NET.BL
                 RunTime = bl_movie.RunTime,
                 Title = bl_movie.Title,
                 TrailerURL = bl_movie.TrailerURL,
+                vote_average = bl_movie.vote_average,
+                ImaggaStrings = bl_movie.ImaggaStrings
+                        .SelectMany(tagsResponse => tagsResponse.Result.Tags) // Assurez-vous d'accéder correctement à `Tags` à travers `Result`
+                        .Select(tagItem => tagItem.Tag.En)
+                        .ToList()
             };
         }
 
-        public static string GetPosterUrl(string posterPath, string size = "w500")
+        public static string GetPosterUrl(string posterPath, string size = "w300")
         {
             if (string.IsNullOrWhiteSpace(posterPath))
             {

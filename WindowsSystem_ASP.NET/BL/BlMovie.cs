@@ -13,5 +13,8 @@ namespace WindowsSystem_ASP.NET.BL
         public string? Poster_Path { get; set; }
         public string? PosterURL { get; set; }
         public string? TrailerURL { get; set; }
+        public double? vote_average { get; set; }
+        public List<BlTagsResponse?> ImaggaStrings { get; set; } = new List<BlTagsResponse?>();
+
     }
 }

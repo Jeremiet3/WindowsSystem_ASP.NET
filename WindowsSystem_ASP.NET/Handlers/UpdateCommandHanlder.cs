@@ -30,6 +30,7 @@ namespace WindowsSystem_ASP.NET.Handlers
             movie.ReleaseDate = request.ReleaseDate ?? movie.ReleaseDate;
             movie.RunTime = request.RunTime ?? movie.RunTime;
             movie.TmdbId = request.TmdbId;
+            movie.vote_average = request.vote_average ?? movie.vote_average;
             await _dbContext.SaveChangesAsync();
 
             return 1; // Mise à jour réussie

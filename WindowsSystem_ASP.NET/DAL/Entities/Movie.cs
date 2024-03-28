@@ -1,4 +1,6 @@
-﻿namespace WindowsSystem_ASP.NET.DAL.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WindowsSystem_ASP.NET.DAL.Entities
 {
     public class Movie
     {
@@ -10,7 +12,11 @@
         public string? Overview { get; set; }
         public string? PosterURL { get; set; }
         public string? TrailerURL { get; set; }
-        public int TmdbId { get; set; } 
+        public double? vote_average { get; set; }
+        public int TmdbId { get; set; }
+
+        [NotMapped]
+        public List<string> ImaggaStrings { get; set; } = new List<string>();
 
     }
 }

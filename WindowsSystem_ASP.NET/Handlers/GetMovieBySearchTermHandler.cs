@@ -12,11 +12,13 @@ namespace WindowsSystem_ASP.NET.Handlers
     {
         private readonly DataContext _dbContext;
         private readonly TmdbApiService _tmdbApiService;
+        private readonly ImaggaApiService _maggaApiService;
 
-        public GetMoviesBySearchTermHandler(DataContext dbContext, TmdbApiService tmdbApiService)
+        public GetMoviesBySearchTermHandler(DataContext dbContext, TmdbApiService tmdbApiService, ImaggaApiService maggaApiService)
         {
             _dbContext = dbContext;
             _tmdbApiService = tmdbApiService;
+            _maggaApiService = maggaApiService;
         }
         public async Task<IEnumerable<Movie>> Handle(GetMoviesBySearchTermQuery request, CancellationToken cancellationToken)
         {
@@ -29,10 +31,12 @@ namespace WindowsSystem_ASP.NET.Handlers
 
             var movies = new List<Movie>();
 
+            var allMovies = await _dbContext.Movies.ToListAsync(cancellationToken);
+
             foreach (var blMovie in searchResult)
             {
                 // Check if the movie is in the database 
-                var existingMovie = await _dbContext.Movies.FirstOrDefaultAsync(x => x.TmdbId == blMovie.Id);
+                var existingMovie = allMovies.FirstOrDefault(x => x.TmdbId == blMovie.Id);
 
                 if (existingMovie != null)
                 {
@@ -44,6 +48,25 @@ namespace WindowsSystem_ASP.NET.Handlers
                     // else add the movie from the api after convert it from BlMovie to Movie
                     var movie = BlConversion.GetMovie(blMovie);
                     movies.Add(movie);
+                }
+            }
+
+            // Imagga use 
+
+            foreach (var movie in allMovies)
+            {
+                // check if the poster isn't null or empty 
+                if (!string.IsNullOrEmpty(movie.PosterURL) && !searchResult.Any(m => m.Id == movie.TmdbId))
+                {
+                    // retrieve all tags from the API
+                    var tags = await _maggaApiService.TagImageAsync(movie.PosterURL);
+
+                    // check exist any tags that correspond to the searchTerm (key word) 
+                    if (tags.Any(tag => tag.Contains(request.SearchTerm, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        // If yes add the movie to the return movies
+                        movies.Add(movie);
+                    }
                 }
             }
 

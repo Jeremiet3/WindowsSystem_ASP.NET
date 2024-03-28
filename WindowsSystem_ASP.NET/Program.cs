@@ -23,6 +23,16 @@ namespace WindowsSystem_ASP.NET
                
             });
 
+            builder.Services.AddSingleton<ImaggaApiService>();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader());
+            });
+
             builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 
             builder.Services.AddControllers();
@@ -37,6 +47,7 @@ namespace WindowsSystem_ASP.NET
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseCors("AllowAll");
             }
 
             app.UseHttpsRedirection();
